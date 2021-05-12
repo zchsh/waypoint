@@ -1,17 +1,23 @@
-<form class="pds-form" {{on "submit" this.saveVariableSettings}}>
+{{!-- Variables list goes here --}}
 
-  <div part="fields" class="card">
-    <div class="card-header">
-      <h4>{{t "form.project_settings.variables.title"}}</h4>
-    </div>
-    <fieldset class="pds-formFieldSet">
-      <div class="pds-formField">
-        <Pds::Input
-          @type="text"
-        />
+<Pds::Button {{on "click" this.addVariable}}><Pds::Icon @type="plus-plain"/>Add Variable</Pds::Button>
+
+{{#if this.isCreating}}
+  <form class="pds-form" {{on "submit" this.saveVariableSettings}}>
+
+    <div part="fields" class="card">
+      <div class="card-header">
+        <h4>{{t "form.project_settings.variables.title"}}</h4>
       </div>
-  </fieldset>
-  </div>
+      <fieldset class="pds-formFieldSet">
+        <div class="pds-formField">
+          <Pds::Input
+            @type="text"
+          />
+        </div>
+    </fieldset>
+    </div>
 
-  <Pds::Button @variant="primary" @type="submit">{{t "form.project_settings.variables.button"}}</Pds::Button>
-</form>
+    <Pds::Button @variant="primary" @type="submit">{{t "form.project_settings.variables.button"}}</Pds::Button>
+  </form>
+{{/if}}
