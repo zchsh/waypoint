@@ -11,13 +11,34 @@
       </div>
       <fieldset class="pds-formFieldSet">
         <div class="pds-formField">
+          <label for="input-variable-name" class="pds-fieldName">
+            {{t "form.project_settings.variables.variable_name"}}
+          </label>
           <Pds::Input
             @type="text"
+            id="input-variable-name"
+            placeholder={{t "form.project_settings.variables.variable_name_placeholder"}}
+            value={{this.activeVariable.name}}
           />
         </div>
-    </fieldset>
+        <div class="pds-formField">
+          <label for="input-variable-value" class="pds-fieldName">
+            {{t "form.project_settings.variables.variable_value"}}
+          </label>
+          <Pds::Input
+            @type="text"
+            id="input-variable-value"
+            placeholder={{t "form.project_settings.variables.variable_value_placeholder"}}
+            value={{this.activeVariable.name}}
+          />
+        </div>
+      </fieldset>
+      <div class="card-footer">
+        <Pds::ButtonSet>
+          <Pds::Button @variant="primary" @type="submit">{{t "form.project_settings.variables.button_submit"}}</Pds::Button>
+          <Pds::Button @variant="secondary" {{on "click" this.cancelCreate}}>{{t "form.project_settings.variables.button_cancel"}}</Pds::Button>
+        </Pds::ButtonSet>
+      </div>
     </div>
-
-    <Pds::Button @variant="primary" @type="submit">{{t "form.project_settings.variables.button"}}</Pds::Button>
   </form>
 {{/if}}

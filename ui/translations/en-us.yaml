@@ -59,8 +59,13 @@ form:
       hcl_content_label: 'waypoint.hcl file'
       button: 'Apply'
     variables:
+      variable_name: 'Name'
+      variable_name_placeholder: 'var_name'
+      variable_value: 'Value'
+      variable_value_placeholder: 'value'
       title: 'Input Variables'
-      button: 'Apply'
+      button_submit: 'Apply'
+      button_cancel: 'Cancel'
 
 auth:
   title: 'Welcome to Waypoint'

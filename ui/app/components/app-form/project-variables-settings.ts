@@ -10,17 +10,25 @@ export default class AppFormProjectVariablesSettings extends Component<ProjectSe
   @tracked args;
   @tracked project;
   @tracked isCreating: boolean;
+  @tracked activeVariable;
 
   constructor(owner: any, args: any) {
     super(owner, args);
     let { project } = this.args;
     this.project = project;
+    this.activeVariable = null;
     this.isCreating = false;
   }
 
   @action
   addVariable() {
     this.isCreating = true;
+  }
+
+  @action
+  cancelCreate() {
+    this.activeVariable = null;
+    this.isCreating = false;
   }
 
   @action
