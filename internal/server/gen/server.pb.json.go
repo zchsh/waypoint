@@ -100,7 +100,7 @@ func (msg *Variable) UnmarshalJSON(b []byte) error {
 }
 
 // MarshalJSON implements json.Marshaler
-func (msg *Variable_SourceCLIArg) MarshalJSON() ([]byte, error) {
+func (msg *Variable_File) MarshalJSON() ([]byte, error) {
 	var buf bytes.Buffer
 	err := (&jsonpb.Marshaler{
 		EnumsAsInts:  false,
@@ -111,14 +111,14 @@ func (msg *Variable_SourceCLIArg) MarshalJSON() ([]byte, error) {
 }
 
 // UnmarshalJSON implements json.Unmarshaler
-func (msg *Variable_SourceCLIArg) UnmarshalJSON(b []byte) error {
+func (msg *Variable_File) UnmarshalJSON(b []byte) error {
 	return (&jsonpb.Unmarshaler{
 		AllowUnknownFields: false,
 	}).Unmarshal(bytes.NewReader(b), msg)
 }
 
 // MarshalJSON implements json.Marshaler
-func (msg *Variable_SourceCLIFile) MarshalJSON() ([]byte, error) {
+func (msg *Variable_VCS) MarshalJSON() ([]byte, error) {
 	var buf bytes.Buffer
 	err := (&jsonpb.Marshaler{
 		EnumsAsInts:  false,
@@ -129,14 +129,14 @@ func (msg *Variable_SourceCLIFile) MarshalJSON() ([]byte, error) {
 }
 
 // UnmarshalJSON implements json.Unmarshaler
-func (msg *Variable_SourceCLIFile) UnmarshalJSON(b []byte) error {
+func (msg *Variable_VCS) UnmarshalJSON(b []byte) error {
 	return (&jsonpb.Unmarshaler{
 		AllowUnknownFields: false,
 	}).Unmarshal(bytes.NewReader(b), msg)
 }
 
 // MarshalJSON implements json.Marshaler
-func (msg *Variable_SourceEnvVar) MarshalJSON() ([]byte, error) {
+func (msg *Variable_HclPos) MarshalJSON() ([]byte, error) {
 	var buf bytes.Buffer
 	err := (&jsonpb.Marshaler{
 		EnumsAsInts:  false,
@@ -147,14 +147,14 @@ func (msg *Variable_SourceEnvVar) MarshalJSON() ([]byte, error) {
 }
 
 // UnmarshalJSON implements json.Unmarshaler
-func (msg *Variable_SourceEnvVar) UnmarshalJSON(b []byte) error {
+func (msg *Variable_HclPos) UnmarshalJSON(b []byte) error {
 	return (&jsonpb.Unmarshaler{
 		AllowUnknownFields: false,
 	}).Unmarshal(bytes.NewReader(b), msg)
 }
 
 // MarshalJSON implements json.Marshaler
-func (msg *Variable_SourceRepoFile) MarshalJSON() ([]byte, error) {
+func (msg *Variable_HclRange) MarshalJSON() ([]byte, error) {
 	var buf bytes.Buffer
 	err := (&jsonpb.Marshaler{
 		EnumsAsInts:  false,
@@ -165,25 +165,7 @@ func (msg *Variable_SourceRepoFile) MarshalJSON() ([]byte, error) {
 }
 
 // UnmarshalJSON implements json.Unmarshaler
-func (msg *Variable_SourceRepoFile) UnmarshalJSON(b []byte) error {
-	return (&jsonpb.Unmarshaler{
-		AllowUnknownFields: false,
-	}).Unmarshal(bytes.NewReader(b), msg)
-}
-
-// MarshalJSON implements json.Marshaler
-func (msg *Variable_SourceServer) MarshalJSON() ([]byte, error) {
-	var buf bytes.Buffer
-	err := (&jsonpb.Marshaler{
-		EnumsAsInts:  false,
-		EmitDefaults: false,
-		OrigName:     false,
-	}).Marshal(&buf, msg)
-	return buf.Bytes(), err
-}
-
-// UnmarshalJSON implements json.Unmarshaler
-func (msg *Variable_SourceServer) UnmarshalJSON(b []byte) error {
+func (msg *Variable_HclRange) UnmarshalJSON(b []byte) error {
 	return (&jsonpb.Unmarshaler{
 		AllowUnknownFields: false,
 	}).Unmarshal(bytes.NewReader(b), msg)
