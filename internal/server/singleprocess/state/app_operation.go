@@ -56,9 +56,11 @@ type appOperation struct {
 	// index init on server boot and `sync/atomic` should be used to increment
 	// it on each use.
 	//
+	// The keys, in order, are: project, app, workspace
+	//
 	// NOTE(mitchellh): we currently never prune this map. We should do that
 	// once we implement Delete.
-	seq map[string]map[string]*uint64
+	seq map[string]map[string]map[string]*uint64
 }
 
 // Test validates that the operation struct is setup properly. This
@@ -442,7 +444,7 @@ func (op *appOperation) dbPut(
 		// If we're not updating, then set the sequence number up if we have one.
 		var seq uint64
 		if f := op.valueFieldReflect(value, "Sequence"); f.IsValid() {
-			seq = atomic.AddUint64(op.appSeq(appRef), 1)
+			seq = atomic.AddUint64(op.appSeq(appRef, wsRef), 1)
 			f.Set(reflect.ValueOf(seq))
 		}
 
@@ -516,26 +518,37 @@ func (op *appOperation) dbPut(
 
 // appSeq gets the pointer to the sequence number for the given application.
 // This can only safely be called while holding the memdb write transaction.
-func (op *appOperation) appSeq(ref *pb.Ref_Application) *uint64 {
+func (op *appOperation) appSeq(
+	ref *pb.Ref_Application,
+	wsRef *pb.Ref_Workspace,
+) *uint64 {
 	if op.seq == nil {
-		op.seq = map[string]map[string]*uint64{}
+		op.seq = map[string]map[string]map[string]*uint64{}
 	}
 
 	// Get our apps
 	k := strings.ToLower(ref.Project)
 	apps, ok := op.seq[k]
 	if !ok {
-		apps = map[string]*uint64{}
+		apps = map[string]map[string]*uint64{}
 		op.seq[k] = apps
 	}
 
 	// Get our app
 	k = strings.ToLower(ref.Application)
-	seq, ok := apps[k]
+	ws, ok := apps[k]
+	if !ok {
+		ws = map[string]*uint64{}
+		apps[k] = ws
+	}
+
+	// Get our workspace
+	k = strings.ToLower(wsRef.Workspace)
+	seq, ok := ws[k]
 	if !ok {
 		var value uint64
 		seq = &value
-		apps[k] = seq
+		ws[k] = seq
 	}
 
 	return seq
@@ -570,7 +583,8 @@ func (op *appOperation) indexInit(s *State, dbTxn *bolt.Tx, memTxn *memdb.Txn) e
 			seq := v.(uint64)
 
 			appRef := op.valueField(result, "Application").(*pb.Ref_Application)
-			current := op.appSeq(appRef)
+			wsRef := op.valueField(result, "Workspace").(*pb.Ref_Workspace)
+			current := op.appSeq(appRef, wsRef)
 			if seq > *current {
 				*current = seq
 			}

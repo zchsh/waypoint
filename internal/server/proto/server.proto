@@ -438,9 +438,16 @@ message Ref {
     }
   }
 
-  // OperationSeq references an operation by sequence number.
+  // OperationSeq references an operation by sequence number. Sequence numbers
+  // are unique in the context of a (project, application, workspace) tuple.
   message OperationSeq {
     Application application = 1;
+
+    // Workspace is the workspace that the operation resides in. Due to
+    // backwards compatibility reasons, this is allowed to be nil. If nil,
+    // this defaults to the default workspace.
+    Workspace workspace = 3;
+
     uint64 number = 2;
   }
 

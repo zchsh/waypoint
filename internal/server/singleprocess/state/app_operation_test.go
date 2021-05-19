@@ -16,12 +16,18 @@ import (
 )
 
 func TestAppOperation(t *testing.T) {
-	op := &appOperation{
-		Struct: (*pb.Build)(nil),
-		Bucket: buildOp.Bucket,
+	// testOp can be called to create a new operation
+	testOp := func() *appOperation {
+		op := &appOperation{
+			Struct: (*pb.Build)(nil),
+			Bucket: buildOp.Bucket,
+		}
+		op.Test(t)
+		return op
 	}
 
-	op.Test(t)
+	// Many use the op globally
+	op := testOp()
 
 	t.Run("basic put and get", func(t *testing.T) {
 		require := require.New(t)
@@ -459,6 +465,115 @@ func TestAppOperation(t *testing.T) {
 
 		// Observe that the watch fires
 		require.False(ws.Watch(time.After(1 * time.Second)))
+	})
+
+	t.Run("sequence number is unique per workspace", func(t *testing.T) {
+		require := require.New(t)
+
+		s := TestState(t)
+		defer s.Close()
+
+		op := testOp()
+
+		// Create a build
+		require.NoError(op.Put(s, false, serverptypes.TestValidBuild(t, &pb.Build{
+			Id: "A",
+		})))
+
+		// Read it back
+		raw, err := op.Get(s, appOpById("A"))
+		require.NoError(err)
+		require.NotNil(raw)
+
+		b, ok := raw.(*pb.Build)
+		require.True(ok)
+		require.NotNil(b.Application)
+		require.Equal("A", b.Id)
+		require.Equal(uint64(1), b.Sequence)
+
+		// Create another, change the workspace
+		require.NoError(op.Put(s, false, serverptypes.TestValidBuild(t, &pb.Build{
+			Id: "B",
+			Workspace: &pb.Ref_Workspace{
+				Workspace: "other",
+			},
+		})))
+
+		// Read it back
+		raw, err = op.Get(s, appOpById("B"))
+		require.NoError(err)
+		require.NotNil(raw)
+
+		// Should have sequence 1 still
+		b, ok = raw.(*pb.Build)
+		require.True(ok)
+		require.NotNil(b.Application)
+		require.Equal("B", b.Id)
+		require.Equal("other", b.Workspace.Workspace)
+		require.Equal(uint64(1), b.Sequence)
+
+		{
+			// Create another in the default workspace
+			require.NoError(op.Put(s, false, serverptypes.TestValidBuild(t, &pb.Build{
+				Id: "C",
+			})))
+
+			// Read it back
+			raw, err := op.Get(s, appOpById("C"))
+			require.NoError(err)
+			require.NotNil(raw)
+
+			b, ok := raw.(*pb.Build)
+			require.True(ok)
+			require.NotNil(b.Application)
+			require.Equal("C", b.Id)
+			require.Equal(uint64(2), b.Sequence)
+		}
+
+		{
+			// Get it by sequence, default workspace
+			raw, err = op.Get(s, &pb.Ref_Operation{
+				Target: &pb.Ref_Operation_Sequence{
+					Sequence: &pb.Ref_OperationSeq{
+						Application: b.Application,
+						Number:      1,
+					},
+				},
+			})
+			require.NoError(err)
+			require.NotNil(raw)
+
+			b, ok = raw.(*pb.Build)
+			require.True(ok)
+			require.NotNil(b.Application)
+			require.Equal("A", b.Id)
+			require.Equal("default", b.Workspace.Workspace)
+			require.Equal(uint64(1), b.Sequence)
+		}
+
+		{
+			// Get it by sequence, other workspace
+			raw, err = op.Get(s, &pb.Ref_Operation{
+				Target: &pb.Ref_Operation_Sequence{
+					Sequence: &pb.Ref_OperationSeq{
+						Application: b.Application,
+						Workspace: &pb.Ref_Workspace{
+							Workspace: "other",
+						},
+						Number: 1,
+					},
+				},
+			})
+			require.NoError(err)
+			require.NotNil(raw)
+
+			b, ok = raw.(*pb.Build)
+			require.True(ok)
+			require.NotNil(b.Application)
+			require.Equal("B", b.Id)
+			require.Equal("other", b.Workspace.Workspace)
+			require.Equal(uint64(1), b.Sequence)
+		}
 	})
 }
 
