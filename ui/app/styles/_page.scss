@@ -13,6 +13,7 @@
 @import './_icon-tile';
 @import './_login';
 @import './_onboarding';
+@import './project-input-variables';
 
 #page {
   position: relative;
@@ -50,7 +51,7 @@
     padding-top: scale.$lg-6;
   }
 
-  header {
+  .page-header {
     display: flex;
     align-items: center;
     flex-wrap: wrap;
