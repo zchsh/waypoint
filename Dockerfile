@@ -66,7 +66,7 @@ WORKDIR /shadow
 RUN git checkout 59c2dabb264ef7b3137f5edb52c0b31d5af0cf76
 RUN ./autogen.sh --disable-nls --disable-man --without-audit \
     --without-selinux --without-acl --without-attr --without-tcb \
-    --without-nscd \
+    --without-nscd --disable-dependency-tracking \
     && make \
     && cp src/newuidmap src/newgidmap /usr/bin
 
