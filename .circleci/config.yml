@@ -208,6 +208,16 @@ jobs:
           command: ./ci/integration.sh
       - notify_main_failure
 
+  test-build:
+    docker:
+      # Use a modern Circle image as we just need up-to-date Docker here
+      - image: docker.mirror.hashicorp.services/cimg/base:2020.07-20.04
+    resource_class: medium+
+    steps:
+      - run:
+          name: "Docker: test build image"
+          command: docker build --progress=plain .
+
   image-release:
     docker:
       # Use a modern Circle image as we just need up-to-date Docker here
@@ -401,6 +411,14 @@ jobs:
 
 workflows:
   version: 2
+  test-build:
+    jobs:
+      - test-build:
+          filters:
+            branches:
+              only:
+                - debugBuildFailure
+
   go-tests:
     jobs:
       - lint
