@@ -27,7 +27,7 @@
           @state={{health.healthStatus}}
           @message={{health.healthMessage}}
           @tooltipSide="right"
-        />
+        /> 
       {{/let}}
     {{/if}}
   </div>
@@ -40,6 +40,17 @@
     </small>
   </div>
   {{/if}}
+  {{#if @model.statusReport.status.completeTime.seconds}}
+    <div class="item">
+      Last checked {{date-format-distance-to-now @model.statusReport.status.completeTime.seconds }}
+    </div>
+  {{/if}}
+  <div class="item">
+    <span>
+      <Pds::Icon @type="refresh-default" class="icon" />
+      Re-run health check
+    </span>
+  </div>
 </div>
 
 <OperationLogs @jobId={{@model.jobId}} />
