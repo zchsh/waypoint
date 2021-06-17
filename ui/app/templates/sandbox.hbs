@@ -1,0 +1,22 @@
+<div style="display: flex; gap: 4px;">
+	<Pds::Icon @type="logo-kubernetes-color-alt" class="icon" />
+	<StatusReportIndicator
+		@statusReport={{hash
+			id="status-report-1"
+			status=(hash
+				state=2
+				details="Example status details"
+				error=null
+				startTime=(hash seconds=null nanos=null)
+				completeTime=(hash seconds=null nanos=null)
+			)
+			health=(hash
+				healthStatus="READY"
+				healthMessage="Example health message"
+				name="Example health name"
+				id="health-1"
+			)
+			resourcesHealthList=(array)
+		}}
+	/>
+</div>
