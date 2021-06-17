@@ -3,7 +3,7 @@
 @use 'pds/tokens/scale';
 
 :root {
-  --footer-text: #{dehex(color.$ui-cool-gray-500)};
+  --footer-text: #{dehex(color.$ui-cool-gray-600)};
 }
 
 
