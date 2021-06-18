@@ -1,0 +1,26 @@
+{{#let @statusReport.health.healthStatus as |status|}}
+<span class="status-report-indicator">
+  <span
+    class="
+      status-report-indicator--badge
+      {{if (eq status "UNKNOWN") "status-report-indicator--badge--gray"}}
+      {{if (eq status "ALIVE") "status-report-indicator--badge--green"}}
+      {{if (eq status "READY") "status-report-indicator--badge--green"}}
+      {{if (eq status "DOWN") "status-report-indicator--badge--red"}}
+      {{if (eq status "PARTIAL") "status-report-indicator--badge--orange"}}
+    "
+  ></span>
+  <span
+    class="
+      status-report-indicator--label
+      {{if (eq status "UNKNOWN") "status-report-indicator--label--gray"}}
+      {{if (eq status "ALIVE") "status-report-indicator--label--green"}}
+      {{if (eq status "READY") "status-report-indicator--label--green"}}
+      {{if (eq status "DOWN") "status-report-indicator--label--red"}}
+      {{if (eq status "PARTIAL") "status-report-indicator--label--orange"}}
+    "
+  >
+    {{t (concat "status_report_indicator.label." @statusReport.health.healthStatus)}}
+  </span>
+</span>
+{{/let}}

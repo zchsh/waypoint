@@ -1,0 +1,40 @@
+@use 'pds/tokens/color';
+@use 'pds/tokens/scale';
+@use 'pds/core/typography/config' as Typography;
+
+.status-report-indicator {
+  display: inline-flex;
+  align-items: center;
+  gap: scale.$sm--3;
+
+  &--badge {
+    width: scale.$sm--2;
+    height: scale.$sm--2;
+    border-radius: 50%;
+
+    &--gray {
+      background: color.$ui-gray-300;
+    }
+    &--green {
+      background: color.$green-500;
+    }
+  }
+
+  &--label {
+    @include Typography.Interface(S);
+
+    &--gray {
+      color: color.$ui-gray-500;
+    }
+
+    &--green {
+      color: color.$green-800;
+
+      @media (prefers-color-scheme: dark) {
+        & {
+          color: color.$green-500;
+        }
+      }
+    }
+  }
+}
